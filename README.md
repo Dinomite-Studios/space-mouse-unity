@@ -31,8 +31,8 @@ This driver supports both PC and Mac.
 ## Installation
 
 - Install [3DConnexion driver](http://www.3dconnexion.com/service/drivers.html) and make sure it is running
-- Import the package into your Unity project via `Unity Package Manager Window` -> `git Source`
-- Open the SpaceNavigator window from the pull-down menu `Window/SpaceNavigator`
+- Import the package into your Unity project via `Unity Package Manager Window` -> `Add package from git URL...`
+- Open the SpaceNavigator window from the pull-down menu `Window` -> `SpaceNavigator`
 
 ## Credits
 
