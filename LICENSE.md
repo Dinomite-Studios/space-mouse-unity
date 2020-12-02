@@ -1,6 +1,7 @@
 MIT License
 
 Copyright (c) 2020 Dinomite Studios
+Copyright (C) 2017 Patrick Hogenboom
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
