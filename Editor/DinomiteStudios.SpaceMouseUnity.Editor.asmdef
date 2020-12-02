@@ -1,0 +1,17 @@
+{
+    "name": "DinomiteStudios.SpaceMouseUnity.Editor",
+    "references": [
+        "GUID:72f64f6a96958c04da2adee499fb39ef"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
