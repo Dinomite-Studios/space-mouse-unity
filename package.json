@@ -1,0 +1,21 @@
+{
+  "name": "com.dinomitestudios.spacemouseunity",
+  "version": "1.0.0",
+  "displayName": "3Dconnexion SpaceMouse",
+  "description": "3DConnexion Space Mouse driver for Unity.",
+  "unity": "2019.1",
+  "license": "MIT",
+  "keywords": [
+    "3Dconnexion",
+    "SpaceMouse",
+    "CAD",
+    "Space",
+    "Navigator"
+  ],
+  "author": {
+    "name": "Dinomite Studios",
+    "email": "info@dinomitestudios.com",
+    "url": "https://www.dinomitestudios.com"
+  },
+  "type": "tool"
+}
