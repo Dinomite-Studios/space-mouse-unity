@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 
-namespace DinomiteStudios.SpaceMouseUnity
+namespace DinomiteStudios.SpaceMouseUnity.Editor
 {
     [Serializable]
     public class SpaceNavigatorWindow : EditorWindow, IDisposable
@@ -23,13 +23,13 @@ namespace DinomiteStudios.SpaceMouseUnity
         public static void OnDisable()
         {
             // Write settings to PlayerPrefs when EditorWindow is closed.
-            Settings.Write();
+            Settings.Settings.Write();
         }
 
         public static void OnDestroy()
         {
             // Write settings to PlayerPrefs when EditorWindow is closed.
-            Settings.Write();
+            Settings.Settings.Write();
         }
 
         // This does not get called, unfortunately...
@@ -45,13 +45,13 @@ namespace DinomiteStudios.SpaceMouseUnity
 
         public void OnGUI()
         {
-            Settings.OnGUI();
+            Settings.Settings.OnGUI();
         }
 
         public void Dispose()
         {
             // Write settings to PlayerPrefs when EditorWindow is closed.
-            Settings.Write();
+            Settings.Settings.Write();
         }
     }
 }

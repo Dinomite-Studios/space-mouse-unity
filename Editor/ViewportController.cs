@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using DinomiteStudios.SpaceMouseUnity.Settings;
 
 namespace DinomiteStudios.SpaceMouseUnity
 {
@@ -33,7 +34,7 @@ namespace DinomiteStudios.SpaceMouseUnity
             EditorApplication.playModeStateChanged += e => PlaymodeStateChanged();
 
             // Initialize.
-            Settings.Read();
+            Settings.Settings.Read();
             InitCameraRig();
             StoreSelectionTransforms();
         }
@@ -42,12 +43,12 @@ namespace DinomiteStudios.SpaceMouseUnity
         private static void PlaymodeStateChanged()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode && !EditorApplication.isPlaying)
-                Settings.Write();
+                Settings.Settings.Write();
         }
 
         public static void OnApplicationQuit()
         {
-            Settings.Write();
+            Settings.Settings.Write();
             DisposeCameraRig();
             SpaceNavigator.Instance.Dispose();
         }
@@ -58,21 +59,21 @@ namespace DinomiteStudios.SpaceMouseUnity
             // Autosave settings.
             if (!Application.isPlaying && DateTime.Now.Second - _lastSaveTime > _saveInterval)
             {
-                Settings.Write();
+                Settings.Settings.Write();
                 _lastSaveTime = DateTime.Now.Second;
             }
 
             // If we don't want the driver to navigate the editor at runtime, exit now.
-            if (Application.isPlaying && !Settings.RuntimeEditorNav) return;
+            if (Application.isPlaying && !Settings.Settings.RuntimeEditorNav) return;
 
             SceneView sceneView = SceneView.lastActiveSceneView;
             if (!sceneView) return;
 
             SyncRigWithScene();
 
-            if (Settings.LockHorizon && !_wasHorizonLocked)
+            if (Settings.Settings.LockHorizon && !_wasHorizonLocked)
                 StraightenHorizon();
-            _wasHorizonLocked = Settings.LockHorizon;
+            _wasHorizonLocked = Settings.Settings.LockHorizon;
 
             // Return if device is idle.
             if (SpaceNavigator.Translation == Vector3.zero &&
@@ -82,7 +83,7 @@ namespace DinomiteStudios.SpaceMouseUnity
                 return;
             }
 
-            switch (Settings.Mode)
+            switch (Settings.Settings.Mode)
             {
                 case OperationMode.Fly:
                     Fly(sceneView);
@@ -114,7 +115,7 @@ namespace DinomiteStudios.SpaceMouseUnity
         #region - Navigation -
         static void Fly(SceneView sceneView)
         {
-            Fly(sceneView, Settings.FlyInvertTranslation, Settings.FlyInvertRotation);
+            Fly(sceneView, Settings.Settings.FlyInvertTranslation, Settings.Settings.FlyInvertRotation);
         }
         static void Fly(SceneView sceneView, Vector3 translationInversion, Vector3 rotationInversion)
         {
@@ -129,7 +130,7 @@ namespace DinomiteStudios.SpaceMouseUnity
                 sceneView.size -= translation.z;
             else
             {
-                if (Settings.LockHorizon)
+                if (Settings.Settings.LockHorizon)
                 {
                     // Perform azimuth in world coordinates.
                     _camera.Rotate(Vector3.up, rotation.y, Space.World);
@@ -160,12 +161,12 @@ namespace DinomiteStudios.SpaceMouseUnity
             SyncRigWithScene();
 
             // Apply inversion of axes for orbit mode.
-            Vector3 translation = Vector3.Scale(SpaceNavigator.Translation, Settings.OrbitInvertTranslation);
-            Vector3 rotation = Vector3.Scale(SpaceNavigator.Rotation.eulerAngles, Settings.OrbitInvertRotation);
+            Vector3 translation = Vector3.Scale(SpaceNavigator.Translation, Settings.Settings.OrbitInvertTranslation);
+            Vector3 rotation = Vector3.Scale(SpaceNavigator.Rotation.eulerAngles, Settings.Settings.OrbitInvertRotation);
 
             _camera.Translate(translation, Space.Self);
 
-            if (Settings.LockHorizon)
+            if (Settings.Settings.LockHorizon)
             {
                 _camera.RotateAround(Tools.handlePosition, Vector3.up, rotation.y);
                 _camera.RotateAround(Tools.handlePosition, _camera.right, rotation.x);
@@ -185,8 +186,8 @@ namespace DinomiteStudios.SpaceMouseUnity
         static void Telekinesis(SceneView sceneView)
         {
             // Apply inversion of axes for telekinesis mode.
-            Vector3 translation = Vector3.Scale(SpaceNavigator.Translation, Settings.TelekinesisInvertTranslation);
-            Quaternion rotation = Quaternion.Euler(Vector3.Scale(SpaceNavigator.Rotation.eulerAngles, Settings.TelekinesisInvertRotation));
+            Vector3 translation = Vector3.Scale(SpaceNavigator.Translation, Settings.Settings.TelekinesisInvertTranslation);
+            Quaternion rotation = Quaternion.Euler(Vector3.Scale(SpaceNavigator.Rotation.eulerAngles, Settings.Settings.TelekinesisInvertRotation));
 
             // Store the selection's transforms because the user could have edited them since we last used them via the inspector.
             if (_wasIdle)
@@ -197,7 +198,7 @@ namespace DinomiteStudios.SpaceMouseUnity
                 if (!_unsnappedRotations.ContainsKey(transform)) continue;
 
                 Transform reference;
-                switch (Settings.CoordSys)
+                switch (Settings.Settings.CoordSys)
                 {
                     case CoordinateSystem.Camera:
                         reference = sceneView.camera.transform;
@@ -231,15 +232,15 @@ namespace DinomiteStudios.SpaceMouseUnity
                 }
 
                 // Perform rotation with or without snapping.
-                transform.rotation = Settings.SnapRotation ? SnapOnRotation(_unsnappedRotations[transform], Settings.SnapAngle) : _unsnappedRotations[transform];
-                transform.position = Settings.SnapTranslation ? SnapOnTranslation(_unsnappedTranslations[transform], Settings.SnapDistance) : _unsnappedTranslations[transform];
+                transform.rotation = Settings.Settings.SnapRotation ? SnapOnRotation(_unsnappedRotations[transform], Settings.Settings.SnapAngle) : _unsnappedRotations[transform];
+                transform.position = Settings.Settings.SnapTranslation ? SnapOnTranslation(_unsnappedTranslations[transform], Settings.Settings.SnapDistance) : _unsnappedTranslations[transform];
             }
         }
         static void GrabMove(SceneView sceneView)
         {
             // Apply inversion of axes for grab move mode.
-            Vector3 translation = Vector3.Scale(SpaceNavigator.Translation, Settings.GrabMoveInvertTranslation);
-            Vector3 rotation = Vector3.Scale(SpaceNavigator.Rotation.eulerAngles, Settings.GrabMoveInvertRotation);
+            Vector3 translation = Vector3.Scale(SpaceNavigator.Translation, Settings.Settings.GrabMoveInvertTranslation);
+            Vector3 rotation = Vector3.Scale(SpaceNavigator.Rotation.eulerAngles, Settings.Settings.GrabMoveInvertRotation);
 
             // Store the selection's transforms because the user could have edited them since we last used them via the inspector.
             if (_wasIdle)
@@ -268,12 +269,12 @@ namespace DinomiteStudios.SpaceMouseUnity
                 _unsnappedTranslations[transform] += transform.position - oldPos;   // The rotation also added translation, so calculate the translation delta.
 
                 // Perform snapping.
-                transform.position = Settings.SnapTranslation ? SnapOnTranslation(_unsnappedTranslations[transform], Settings.SnapDistance) : _unsnappedTranslations[transform];
-                transform.rotation = Settings.SnapRotation ? SnapOnRotation(_unsnappedRotations[transform], Settings.SnapAngle) : _unsnappedRotations[transform];
+                transform.position = Settings.Settings.SnapTranslation ? SnapOnTranslation(_unsnappedTranslations[transform], Settings.Settings.SnapDistance) : _unsnappedTranslations[transform];
+                transform.rotation = Settings.Settings.SnapRotation ? SnapOnRotation(_unsnappedRotations[transform], Settings.Settings.SnapAngle) : _unsnappedRotations[transform];
             }
 
             // Move the scene camera.
-            Fly(sceneView, Settings.GrabMoveInvertTranslation, Settings.GrabMoveInvertRotation);
+            Fly(sceneView, Settings.Settings.GrabMoveInvertTranslation, Settings.Settings.GrabMoveInvertRotation);
         }
         public static void StraightenHorizon()
         {

@@ -2,6 +2,7 @@
     "name": "DinomiteStudios.SpaceMouseUnity.Runtime",
     "references": [],
     "includePlatforms": [
+        "Editor",
         "macOSStandalone",
         "WindowsStandalone32",
         "WindowsStandalone64"
